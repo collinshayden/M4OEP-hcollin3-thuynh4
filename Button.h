@@ -4,6 +4,8 @@
 #include "Quad.h"
 #include <string>
 
+using namespace std;
+
 class Button : public Quad {
 private:
     std::string label;
@@ -25,9 +27,9 @@ public:
     /* Change the color back when the user is not clicking/hovering */
     void release();
 
-    void flipOnOff();
+    string getLabel();
 
-    bool state = true;
+    void setLabel(string s);
 };
 
 

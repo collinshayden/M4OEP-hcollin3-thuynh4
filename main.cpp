@@ -128,7 +128,6 @@ string getMove(string FEN, int elo) {
     }
     stockMove.close();
 
-
     return move;
     //pull from file when getting move from stockfish
 }
@@ -316,7 +315,6 @@ void makeCompMove(bool side, int elo, Board &board) {
 GLdouble width, height;
 int wd;
 vector<Button> board;
-Quad outline({1, 0, 0}, {0, 0}, 0, 0);
 enum screens {
     start, game, finish
 };
@@ -329,11 +327,23 @@ void init() {
     current_screen = game;
     for (int i = 1; i <= 8; i++) {
         for (int j = 1; j <= 8; j++) {
-            color fill;
+            color fill{};
+            //set square color to alternating white/gray
             ((i + j) % 2 != 0) ? fill = {1, 1, 1} : fill = {0.5, 0.5, 0.5};
             Button button = Button(fill, {85 * j, 85 * i}, 86, 86, to_string(i + j));
             board.push_back(button);
         }
+    }
+//    for (int rank = 0; rank < 8; rank++) {
+//        for (int file = 0; file < 16; file++) {
+//            int square = rank * 16 + file;
+//            if (!(square & 0x88)) {
+//                board.at(square).setLabel(to_string(square));
+//            }
+//        }
+//    }
+    for (int i = 0; i < board.size(); i++) {
+        board.at(i).setLabel(to_string(i));
     }
 }
 
@@ -397,7 +407,6 @@ void kbd(unsigned char key, int x, int y) {
     }
     if (key == 's') {
         if (current_screen == start) current_screen = game;
-
     }
     glutPostRedisplay();
 }

@@ -43,3 +43,11 @@ void Button::release() {
     setColor(originalFill);
 }
 
+void Button::setLabel(string s) {
+    label = s;
+}
+
+string Button::getLabel() {
+    return label;
+}
+
