@@ -23,20 +23,78 @@ using namespace std;
 
 // square encoding
 enum squares {
-    a8 = 0,   b8, c8, d8, e8, f8, g8, h8,
-    a7 = 16,  b7, c7, d7, e7, f7, g7, h7,
-    a6 = 32,  b6, c6, d6, e6, f6, g6, h6,
-    a5 = 48,  b5, c5, d5, e5, f5, g5, h5,
-    a4 = 64,  b4, c4, d4, e4, f4, g4, h4,
-    a3 = 80,  b3, c3, d3, e3, f3, g3, h3,
-    a2 = 96,  b2, c2, d2, e2, f2, g2, h2,
-    a1 = 112, b1, c1, d1, e1, f1, g1, h1, no_sq
+    a8 = 0,
+    b8,
+    c8,
+    d8,
+    e8,
+    f8,
+    g8,
+    h8,
+    a7 = 16,
+    b7,
+    c7,
+    d7,
+    e7,
+    f7,
+    g7,
+    h7,
+    a6 = 32,
+    b6,
+    c6,
+    d6,
+    e6,
+    f6,
+    g6,
+    h6,
+    a5 = 48,
+    b5,
+    c5,
+    d5,
+    e5,
+    f5,
+    g5,
+    h5,
+    a4 = 64,
+    b4,
+    c4,
+    d4,
+    e4,
+    f4,
+    g4,
+    h4,
+    a3 = 80,
+    b3,
+    c3,
+    d3,
+    e3,
+    f3,
+    g3,
+    h3,
+    a2 = 96,
+    b2,
+    c2,
+    d2,
+    e2,
+    f2,
+    g2,
+    h2,
+    a1 = 112,
+    b1,
+    c1,
+    d1,
+    e1,
+    f1,
+    g1,
+    h1,
+    no_sq
 };
+
 string getMove(string FEN, int elo);
 
-void passAndPlay(Board& board);
+void passAndPlay(Board &board);
 
-void stockFish(int elo,Board& board,bool side);
+void stockFish(int elo, Board &board, bool side);
 
 void regularPlay();
 
@@ -44,7 +102,7 @@ void tests();
 
 int squareToInt(string square);
 
-void makeCompMove(bool side,int elo,Board& board);
+void makeCompMove(bool side, int elo, Board &board);
 
 //int main () {
 //    cout << "Welcome to Chess" << endl;
@@ -53,10 +111,10 @@ void makeCompMove(bool side,int elo,Board& board);
 //}
 
 //this method gets the move for the opponent from the stockfish python library
-string getMove(string FEN, int elo){
+string getMove(string FEN, int elo) {
     //change based on computer type
     const string python = "python3";
-    string command = python + " ../chess.py" + " "+ FEN +" "+ to_string(elo);
+    string command = python + " ../chess.py" + " " + FEN + " " + to_string(elo);
     //sends a command to the terminal
     system(command.c_str());
     string move;
@@ -65,7 +123,7 @@ string getMove(string FEN, int elo){
     ifstream stockMove;
     stockMove.open("../cmake-build-debug/stockfishMove.txt");
     //gets the move from a file written in python
-    if(stockMove.is_open()){
+    if (stockMove.is_open()) {
         stockMove >> move;
     }
     stockMove.close();
@@ -76,16 +134,16 @@ string getMove(string FEN, int elo){
 }
 
 //pass and play game mode method
-void passAndPlay(Board& board){
+void passAndPlay(Board &board) {
     vector<int> moves;
     bool side = true;
     //print board
     board.printBoard(true);
     //while loop to keep game running until somebody wins
-    while(!board.game_end){
-        if(side){
+    while (!board.game_end) {
+        if (side) {
             cout << "White to move." << endl;
-        }else{
+        } else {
             cout << "Black to move." << endl;
         }
         //gets user move
@@ -99,13 +157,13 @@ void passAndPlay(Board& board){
 }
 
 //side is player's side
-void stockFish(int elo,Board& board,bool side){
+void stockFish(int elo, Board &board, bool side) {
     //based on who is what color determines what order moves are made in
-    if(!side){
-        makeCompMove(!side,elo,board);
+    if (!side) {
+        makeCompMove(!side, elo, board);
     }
 
-    while(!board.game_end) {
+    while (!board.game_end) {
         //prints board
         board.printBoard(side);
         vector<int> moves = board.getUserMove(side, cout, cin);
@@ -115,7 +173,7 @@ void stockFish(int elo,Board& board,bool side){
         board.printBoard(side);
         //checks if game is over
         board.checkGameEnd();
-        if(!board.game_end) {
+        if (!board.game_end) {
             //computer moves
             makeCompMove(!side, elo, board);
         }
@@ -125,7 +183,7 @@ void stockFish(int elo,Board& board,bool side){
 }
 
 //menu for user input and initial game setup
-void regularPlay(){
+void regularPlay() {
     string line;
     stringstream ss;
     int elo;
@@ -136,18 +194,16 @@ void regularPlay(){
     //gets user input
     getline(cin, line);
     //some input validation to choose what mode the user wants to play
-    while(line != "p" && line != "c" && line != "debug"){
+    while (line != "p" && line != "c" && line != "debug") {
         cout << "please enter a valid option (p/c): " << endl;
         cin.clear();
-        getline(cin,line);
+        getline(cin, line);
     }
-    if(line == "p"){
+    if (line == "p") {
         passAndPlay(board);
-    }
-    else if (line == "debug") {
+    } else if (line == "debug") {
         tests();
-    }
-    else{
+    } else {
         cin.clear();
         cout << "Jack , elo 400" << endl;
         cout << "Evan, elo 1000" << endl;
@@ -156,75 +212,71 @@ void regularPlay(){
         //elo selector
         cout << "Who would you like to play against? (j,e,ha,hu) " << endl;
         getline(cin, line);
-        while(line != "j" && line != "e" && line != "ha" && line != "hu"){
+        while (line != "j" && line != "e" && line != "ha" && line != "hu") {
             cout << "please enter a valid option (j,e,ha,hu): " << endl;
             cin.clear();
-            getline(cin,line);
+            getline(cin, line);
         }
-        if(line == "j"){
+        if (line == "j") {
             elo = 400;
-        }else if(line == "e"){
+        } else if (line == "e") {
             elo = 1000;
-        }else if(line == "ha"){
+        } else if (line == "ha") {
             elo = 1700;
-        }else{
+        } else {
             elo = 2000;
         }
         //run stockfish option
         cin.clear();
         //which side of the board would you like to play
         cout << "Would you like to play as white or black?(w/b) " << endl;
-        getline(cin,line);
-        while(line != "w" && line != "b"){
+        getline(cin, line);
+        while (line != "w" && line != "b") {
             //validation
             cout << "please enter a valid option (w/b): " << endl;
             cin.clear();
-            getline(cin,line);
+            getline(cin, line);
         }
-        if(line == "w"){
+        if (line == "w") {
             side = true;
-        }else{
+        } else {
             side = false;
         }
-        stockFish(elo,board,side);
+        stockFish(elo, board, side);
     }
 }
 
 void tests() {
     string setup;
     vector<string> setups = {"pin", "legality", "checkmate", "promotion", "castles", "stalemate", "disambiguate"};
-    cout << "Choose a setup: 'pin', 'legality' ,'checkmate', 'promotion', 'castles', 'stalemate', 'disambiguate'" << endl;
-    getline(cin,setup);
+    cout << "Choose a setup: 'pin', 'legality' ,'checkmate', 'promotion', 'castles', 'stalemate', 'disambiguate'"
+         << endl;
+    getline(cin, setup);
     while (find(setups.begin(), setups.end(), setup) == setups.end()) {
-        cout << setup << " is invalid. Choose from: 'pin', 'legality', 'checkmate', 'promotion', 'castles', 'stalemate', 'disambiguate'" << endl;
-        getline(cin,setup);
+        cout << setup
+             << " is invalid. Choose from: 'pin', 'legality', 'checkmate', 'promotion', 'castles', 'stalemate', 'disambiguate'"
+             << endl;
+        getline(cin, setup);
     }
     Board board(setup);
     board.printBoard(true);
     if (setup == "checkmate") {
         cout << "Enter Rh8 to demonstrate checkmate." << endl;
-    }
-    else if (setup == "stalemate") {
+    } else if (setup == "stalemate") {
         cout << "Enter Qb6 to demonstrate stalemate." << endl;
-    }
-    else if (setup == "promotion") {
+    } else if (setup == "promotion") {
         cout << "Enter 'a8=Q', 'a8=R', 'a8=N', or 'a8=B' to demonstrate promotion." << endl;
-    }
-    else if (setup == "disambiguate") {
+    } else if (setup == "disambiguate") {
         cout << "Enter 'Rbd5' or 'Rgd5' to demonstrate disambiguation." << endl;
-    }
-    else if (setup == "castles") {
+    } else if (setup == "castles") {
         cout << "Enter '0-0' or '0-0-0' to demonstrate castling." << endl;
-    }
-    else if (setup == "legality") {
+    } else if (setup == "legality") {
         cout << "The Black rook on f8 prevents White from moving into check on f1 or f2. ";
         board.printLegalMovesList(board.side_to_move);
-    }
-    else if (setup == "pin") {
+    } else if (setup == "pin") {
         cout << "The Black rook on e8 prevents White from moving the knight, it is pinned to the king. ";
         board.printLegalMovesList(board.side_to_move);
-    }
-    else {
+    } else {
         cout << "Invalid setup type" << endl;
     }
     while (!board.game_end) {
@@ -236,26 +288,26 @@ void tests() {
 }
 
 //method to convert a user inputted move into the new index in tbe board
-int squareToInt(string square){
-    int file= square[0]-97;
-    int rank = square[1]-48;
+int squareToInt(string square) {
+    int file = square[0] - 97;
+    int rank = square[1] - 48;
     //calculation to get new index in the 0x88 board
     return (8 - rank) * 16 + file;
 }
 
 //makes the computer move
-void makeCompMove(bool side, int elo, Board& board){
+void makeCompMove(bool side, int elo, Board &board) {
     string opp_move;
     int init;
     int target;
     //gets move from stockfish
     opp_move = getMove(board.getFEN(side), elo);
     //gets initial pos of piece
-    init = squareToInt(opp_move.substr(0,2));
+    init = squareToInt(opp_move.substr(0, 2));
     //gets target position for piece
-    target = squareToInt(opp_move.substr(2,2));
+    target = squareToInt(opp_move.substr(2, 2));
     //moves piece for bot
-    board.move(init,target);
+    board.move(init, target);
 }
 
 
@@ -269,7 +321,6 @@ enum screens {
     start, game, finish
 };
 screens current_screen;
-int num_clicks = 0;
 
 void init() {
     width = 760;
@@ -278,13 +329,10 @@ void init() {
     current_screen = game;
     for (int i = 1; i <= 8; i++) {
         for (int j = 1; j <= 8; j++) {
-            Button button = Button({0.5, 0.5, 0.5}, {85 * j, 85 * i}, 85, 85, to_string(i*j));
+            color fill;
+            ((i + j) % 2 != 0) ? fill = {1, 1, 1} : fill = {0.5, 0.5, 0.5};
+            Button button = Button(fill, {85 * j, 85 * i}, 86, 86, to_string(i + j));
             board.push_back(button);
-        }
-    }
-    for (int i = 0; i < board.size(); i++) {
-        if (i % 2 == 0) {
-            board.at(i).setColor(1,0,0);
         }
     }
 }
@@ -318,14 +366,12 @@ void display() {
         for (const char &letter: label) {
             glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24, letter);
         }
-
         label = "Press 's' to start.";
         glRasterPos2i((width / 2) - (4 * label.length()), (height / 2) + 100);
         for (const char &letter: label) {
             glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24, letter);
         }
     } else if (current_screen == game) {
-        outline.draw();
         for (const Quad &square: board) {
             square.draw();
         }
@@ -357,16 +403,11 @@ void kbd(unsigned char key, int x, int y) {
 }
 
 void cursor(int x, int y) {
-    outline.resize(0, 0);
     for (Button &square: board) {
         if (square.isOverlapping(x, y)) {
-            //make it slightly bigger than square
-            outline.resize(square.getWidth() + 10, square.getHeight() + 10);
-            //move it to origin
-            outline.move(-outline.getCenterX(), -outline.getCenterY());
-            //move it to be centered on square
-            outline.move(square.getCenterX(), square.getCenterY());
+            square.hover();
         }
+        else square.release();
     }
     glutPostRedisplay();
 }
@@ -378,20 +419,9 @@ void mouse(int button, int state, int x, int y) {
     for (int index = 0; index < board.size(); index++) {
         Button square = board.at(index);
         if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN && square.isOverlapping(x, y)) {
-            vector<int> adj_indices = {index, index - 5, index + 5};
-            num_clicks += 1;
-            for (int adj: adj_indices) {
-                if (adj >= 0 && adj < board.size()) {
-                    board.at(adj).flipOnOff();
-                }
-            }
-            //making sure it doesn't wrap around rows
-            if (index % 5 != 0) board.at(index - 1).flipOnOff();
-            if ((index - 4) % 5 != 0) board.at(index + 1).flipOnOff();
+
         }
-        if (!square.state) total_off += 1;
     }
-    if (total_off == board.size()) current_screen = finish;
     glutPostRedisplay();
 }
 
@@ -413,7 +443,7 @@ int main(int argc, char **argv) {
     glutInitWindowPosition(100, 200); // Position the window's initial top-left corner
     /* create the window and store the handle to it */
 
-    wd = glutCreateWindow("Chess!" /* title */ );
+    wd = glutCreateWindow("Chess" /* title */ );
 
     // Register callback handler for window re-paint event
     glutDisplayFunc(display);
