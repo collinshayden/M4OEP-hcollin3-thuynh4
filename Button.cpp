@@ -1,5 +1,5 @@
 #include "Button.h"
-#include "graphics.h"
+
 using namespace std;
 
 Button::Button(color fill, point center, unsigned int width, unsigned int height, std::string label) : Quad(fill, center, width, height) {
@@ -22,7 +22,7 @@ bool Button::isOverlapping(int x, int y) const {
 void Button::hover() {
 //    setColor(hoverFill);
     draw();
-    glutPostRedisplay();
+//    glutPostRedisplay();
 }
 
 /* Change color of the box when the user is clicking on it */

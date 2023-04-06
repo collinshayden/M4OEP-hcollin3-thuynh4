@@ -1,7 +1,8 @@
 #include "Quad.h"
-#include "graphics.h"
+//#include "graphics.h"
 #include "string"
-
+//#include "main.cpp"
+#include <GLUT/glut.h>
 using namespace std;
 
 Quad::Quad() {
