@@ -26,6 +26,7 @@ bool Button::isOverlapping(int x, int y) const {
 
 /* Change color of the box when the user is hovering over it */
 void Button::hover() {
+//    originalFill = fill;
     setColor(hoverFill);
     draw();
     glutPostRedisplay();
@@ -41,6 +42,8 @@ void Button::pressDown() {
 /* Change the color back when the user is not clicking/hovering */
 void Button::release() {
     setColor(originalFill);
+    draw();
+    glutPostRedisplay();
 }
 
 void Button::setLabel(string s) {
