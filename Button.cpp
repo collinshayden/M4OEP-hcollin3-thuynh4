@@ -12,9 +12,10 @@ Button::Button(color fill, point center, unsigned int width, unsigned int height
 
 void Button::draw() const {
     Quad::draw();
+    string label = to_string(index);
     glColor3f(0, 0, 0);
-    glRasterPos2i(getCenterX(), getCenterY());
-    for (const char &letter: to_string(index)) {
+    glRasterPos2i(getCenterX()-(4*label.size()), getCenterY());
+    for (const char &letter: label) {
         glutBitmapCharacter(GLUT_BITMAP_8_BY_13, letter);
     }
 }

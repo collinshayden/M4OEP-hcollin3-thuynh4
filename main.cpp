@@ -314,7 +314,7 @@ void makeCompMove(bool side, int elo, Board &board) {
 
 GLdouble width, height;
 int wd;
-vector<Button> board(128, Button({1,1,1},{0, 0}, 0, 0,-1));
+vector<Button> board(128, Button({0.85,0.95,1},{0, 0}, 0, 0,-1));
 enum screens {
     start, game, finish
 };
@@ -338,7 +338,7 @@ void init() {
             //alternating colors
             if (rank % 2 == 0 && file % 2 == 1 || rank % 2 == 1 && file % 2 == 0) {
                 //TODO this is a bit jank, might want to fix later
-                square.setOriginalFill({0.5,0.5,0.5});
+                square.setOriginalFill({0.45,0.65,1});
             }
             square.setIndex(i);
         }
