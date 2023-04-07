@@ -8,10 +8,10 @@ using namespace std;
 
 class Button : public Quad {
 private:
-    std::string label;
+    int index;
     color originalFill, hoverFill, pressFill, offFill;
 public:
-    Button(color fill, point center, unsigned int width, unsigned int height, std::string label);
+    Button(color fill, point center, unsigned int width, unsigned int height, int index);
     /* Uses OpenGL to draw the box with the label on top */
     virtual void draw() const override;
 
@@ -27,9 +27,9 @@ public:
     /* Change the color back when the user is not clicking/hovering */
     void release();
 
-    string getLabel();
+    void setIndex(int i);
 
-    void setLabel(string s);
+    int getIndex();
 
     void setOriginalFill(color fill);
 };

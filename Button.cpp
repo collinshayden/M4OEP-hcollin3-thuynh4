@@ -3,8 +3,8 @@
 
 using namespace std;
 
-Button::Button(color fill, point center, unsigned int width, unsigned int height, std::string label) : Quad(fill, center, width, height) {
-    this->label = label;
+Button::Button(color fill, point center, unsigned int width, unsigned int height, int index) : Quad(fill, center, width, height) {
+    this->index = index;
     this->originalFill = fill;
     hoverFill = {1,0,0};
     pressFill = { 0, 1, 0};
@@ -14,7 +14,7 @@ void Button::draw() const {
     Quad::draw();
     glColor3f(0, 0, 0);
     glRasterPos2i(getCenterX(), getCenterY());
-    for (const char &letter: label) {
+    for (const char &letter: to_string(index)) {
         glutBitmapCharacter(GLUT_BITMAP_8_BY_13, letter);
     }
 }
@@ -39,16 +39,17 @@ void Button::release() {
     setColor(originalFill);
 }
 
-void Button::setLabel(string s) {
-    label = s;
-}
-
-string Button::getLabel() {
-    return label;
-}
 
 void Button::setOriginalFill(color fill) {
     setColor(fill);
     originalFill = fill;
+}
+
+void Button::setIndex(int i) {
+    index = i;
+}
+
+int Button::getIndex() {
+    return index;
 }
 
