@@ -72,9 +72,9 @@ unsigned int Quad::getHeight() const {
 }
 
 void Quad::setColor(double red, double green, double blue) {
-//    fill = {red, green, blue};
-    color x = {red, green, blue};
-    this->fill = x;
+    fill = {red, green, blue};
+//    color x = {red, green, blue};
+//    this->fill = x;
 }
 
 void Quad::setColor(color fill) {

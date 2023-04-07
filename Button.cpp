@@ -5,9 +5,9 @@ using namespace std;
 
 Button::Button(color fill, point center, unsigned int width, unsigned int height, std::string label) : Quad(fill, center, width, height) {
     this->label = label;
-    originalFill = fill;
+    this->originalFill = fill;
     hoverFill = {1,0,0};
-    pressFill = { 0.5, 0.5, 0.5};
+    pressFill = { 0, 1, 0};
 }
 
 void Button::draw() const {
@@ -26,24 +26,17 @@ bool Button::isOverlapping(int x, int y) const {
 
 /* Change color of the box when the user is hovering over it */
 void Button::hover() {
-//    originalFill = fill;
     setColor(hoverFill);
-    draw();
-    glutPostRedisplay();
 }
 
 /* Change color of the box when the user is clicking on it */
 void Button::pressDown() {
     setColor(pressFill);
-    draw();
-    glutPostRedisplay();
 }
 
 /* Change the color back when the user is not clicking/hovering */
 void Button::release() {
     setColor(originalFill);
-    draw();
-    glutPostRedisplay();
 }
 
 void Button::setLabel(string s) {
@@ -52,5 +45,10 @@ void Button::setLabel(string s) {
 
 string Button::getLabel() {
     return label;
+}
+
+void Button::setOriginalFill(color fill) {
+    setColor(fill);
+    originalFill = fill;
 }
 

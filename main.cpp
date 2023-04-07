@@ -337,7 +337,8 @@ void init() {
 
             //alternating colors
             if (rank % 2 == 0 && file % 2 == 1 || rank % 2 == 1 && file % 2 == 0) {
-                square.setColor({0.5,0.5,0.5});
+                //TODO this is a bit jank, might want to fix later
+                square.setOriginalFill({0.5,0.5,0.5});
             }
             square.setLabel(to_string(i));
         }
@@ -423,7 +424,7 @@ void cursor(int x, int y) {
 void mouse(int button, int state, int x, int y) {
     int total_off = 0;
     for (int index = 0; index < board.size(); index++) {
-        Button square = board.at(index);
+        Button &square = board.at(index);
         if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN && square.isOverlapping(x, y)) {
 
         }

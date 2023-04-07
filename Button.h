@@ -30,6 +30,8 @@ public:
     string getLabel();
 
     void setLabel(string s);
+
+    void setOriginalFill(color fill);
 };
 
 
