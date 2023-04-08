@@ -314,11 +314,15 @@ void makeCompMove(bool side, int elo, Board &board) {
 
 GLdouble width, height;
 int wd;
-vector<Button> board(128, Button({0.85,0.95,1},{0, 0}, 0, 0,-1));
 enum screens {
     start, game, finish
 };
 screens current_screen;
+vector<Button> buttons(128, Button({0.85,0.95,1},{0, 0}, 0, 0,-1));
+Board board(true);
+vector<unique_ptr<Piece>> board_state = board.getBoard();
+map<int, vector<int>> legal_moves;
+int selected_square = -1;
 
 void init() {
     width = 760;
@@ -326,9 +330,9 @@ void init() {
     srand(time(0));
     current_screen = game;
     int rank, file;
-    for (int i = 0; i < board.size(); i++) {
+    for (int i = 0; i < buttons.size(); i++) {
         if (!(i & 0x88)) {
-            Button &square = board.at(i);
+            Button &square = buttons.at(i);
             rank = int(i)/16;
             file = i % 16;
 
@@ -380,9 +384,10 @@ void display() {
             glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24, letter);
         }
     } else if (current_screen == game) {
-        for (const Quad &square: board) {
+        for (const Quad &square: buttons) {
             square.draw();
         }
+
 
     } else if (current_screen == finish) {
         string label = "You Win!";
@@ -410,7 +415,7 @@ void kbd(unsigned char key, int x, int y) {
 }
 
 void cursor(int x, int y) {
-    for (Button &square: board) {
+    for (Button &square: buttons) {
         if (square.isOverlapping(x, y)) {
             square.hover();
         }
@@ -423,10 +428,12 @@ void cursor(int x, int y) {
 // state will be GLUT_UP or GLUT_DOWN
 void mouse(int button, int state, int x, int y) {
     int total_off = 0;
-    for (int index = 0; index < board.size(); index++) {
-        Button &square = board.at(index);
+    for (int index = 0; index < buttons.size(); index++) {
+        Button &square = buttons.at(index);
         if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN && square.isOverlapping(x, y)) {
-
+            if (board_state.at())
+            selected_square = square.getIndex();
+            legal_moves = board.getLegalMoves(board.side_to_move);
         }
     }
     glutPostRedisplay();

@@ -37,6 +37,14 @@ public:
      * @return if new board was set
      */
     bool setBoard(vector<unique_ptr<Piece>> &new_board);
+
+    /**
+     * Accesses piece pointer for a given index
+     * @param index
+     * @return unique_ptr to a Piece
+     */
+    Piece getPiece(int index);
+
     /** setter for piece
      * takes in params for new piece
      * used for getting and setting the board

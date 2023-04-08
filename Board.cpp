@@ -76,37 +76,31 @@ Board::Board(string setup) {
         board.at(e8) = unique_ptr<Piece>(make_unique<King>(false));
         board.at(e6) = unique_ptr<Piece>(make_unique<King>(true));
         board.at(h7) = unique_ptr<Piece>(make_unique<Rook>(true));
-    }
-    else if (setup == "stalemate") {
+    } else if (setup == "stalemate") {
         board.at(a8) = unique_ptr<Piece>(make_unique<King>(false));
         board.at(e1) = unique_ptr<Piece>(make_unique<King>(true));
         board.at(b1) = unique_ptr<Piece>(make_unique<Queen>(true));
-    }
-    else if (setup == "promotion") {
+    } else if (setup == "promotion") {
         board.at(e8) = unique_ptr<Piece>(make_unique<King>(false));
         board.at(e1) = unique_ptr<Piece>(make_unique<King>(true));
         board.at(a7) = unique_ptr<Piece>(make_unique<Pawn>(true));
-    }
-    else if (setup == "disambiguate") {
+    } else if (setup == "disambiguate") {
         board.at(e8) = unique_ptr<Piece>(make_unique<King>(false));
         board.at(e1) = unique_ptr<Piece>(make_unique<King>(true));
         board.at(b5) = unique_ptr<Piece>(make_unique<Rook>(true));
         board.at(g5) = unique_ptr<Piece>(make_unique<Rook>(true));
-    }
-    else if (setup == "castles") {
+    } else if (setup == "castles") {
         board.at(e1) = unique_ptr<Piece>(make_unique<King>(true));
         board.at(e8) = unique_ptr<Piece>(make_unique<King>(false));
         board.at(h1) = unique_ptr<Piece>(make_unique<Rook>(true));
         board.at(a1) = unique_ptr<Piece>(make_unique<Rook>(true));
         board.at(h8) = unique_ptr<Piece>(make_unique<Rook>(false));
         board.at(a8) = unique_ptr<Piece>(make_unique<Rook>(false));
-    }
-    else if (setup == "legality") {
+    } else if (setup == "legality") {
         board.at(e1) = unique_ptr<Piece>(make_unique<King>(true));
         board.at(e8) = unique_ptr<Piece>(make_unique<Rook>(false));
         board.at(f8) = unique_ptr<Piece>(make_unique<Rook>(false));
-    }
-    else if (setup == "pin") {
+    } else if (setup == "pin") {
         board.at(e1) = unique_ptr<Piece>(make_unique<King>(true));
         board.at(f8) = unique_ptr<Piece>(make_unique<King>(false));
         board.at(e8) = unique_ptr<Piece>(make_unique<Rook>(false));
@@ -142,6 +136,10 @@ bool Board::setBoard(vector<unique_ptr<Piece>> &new_board) {
     return false;
 }
 
+Piece Board::getPiece(int index) {
+    return *board.at(index);
+}
+
 void
 Board::setPiece(vector<unique_ptr<Piece>> &new_board, int index, bool side, bool has_moved, const char piece_type) {
     if (piece_type == 'E') {
@@ -171,7 +169,10 @@ void Board::move(int init_pos, int target_pos) {
         //checking for castles
         if (piece == 'K' && (init_pos == e1 || init_pos == e8)) {
             //map of rook destinations and origins based on new king position
-            map<int, vector<int>> castle_sqs = {{g1, {f1,h1}}, {c1, {d1, a1}}, {g8, {f8, h8}}, {c8, {d8, a8}}};
+            map<int, vector<int>> castle_sqs = {{g1, {f1, h1}},
+                                                {c1, {d1, a1}},
+                                                {g8, {f8, h8}},
+                                                {c8, {d8, a8}}};
             //our normal move will only function will only move the king, so below we additionally move the rook to the proper place
             if (castle_sqs.count(target_pos) != 0) {
                 setPiece(board, castle_sqs.at(target_pos).at(0), side, true, 'R');
@@ -257,7 +258,7 @@ map<int, vector<int>> Board::getLegalMoves(bool side) {
 
                     //pawns move diagonally to capture only when there is a piece there
                     if (board.at(square)->piece_type == 'P') {
-                        for (int target_sq : piece_moves) {
+                        for (int target_sq: piece_moves) {
                             if (board.at(target_sq)->piece_type != 'E') {
                                 if (checkLegalMove(square, target_sq)) {
                                     legal_moves[square].push_back(target_sq);
@@ -266,7 +267,7 @@ map<int, vector<int>> Board::getLegalMoves(bool side) {
                         }
                         //check pawn pushes
                         vector<int> pawn_pushes = getPawnPushes(square, side, board);
-                        for (int target_sq : pawn_pushes) {
+                        for (int target_sq: pawn_pushes) {
                             if (board.at(target_sq)->piece_type == 'E') {
                                 if (checkLegalMove(square, target_sq)) {
                                     legal_moves[square].push_back(target_sq);
@@ -274,9 +275,9 @@ map<int, vector<int>> Board::getLegalMoves(bool side) {
                             }
                         }
                     }
-                    //for other pieces, simulate the move
+                        //for other pieces, simulate the move
                     else {
-                        for (int target_sq : piece_moves) {
+                        for (int target_sq: piece_moves) {
                             if (checkLegalMove(square, target_sq)) {
                                 legal_moves[square].push_back(target_sq);
                             }
@@ -305,6 +306,7 @@ map<int, vector<int>> Board::getLegalMoves(bool side) {
     }
     return legal_moves;
 }
+
 //gets FEN of board
 string Board::getFEN(bool turn) {
     //variables
@@ -326,17 +328,17 @@ string Board::getFEN(bool turn) {
                 piece_type = board.at(square)->piece_type;
                 side = board.at(square)->side;
                 //if empty add one to empty spaces
-                if(piece_type == 'E'){
+                if (piece_type == 'E') {
                     empty_spaces++;
-                }else{
+                } else {
                     //if black make piece_type lower case
-                    if(!side){
+                    if (!side) {
                         piece_type = tolower(piece_type);
                     }
                     //if no empty spaces before piece, just add the piece
-                    if(empty_spaces == 0){
+                    if (empty_spaces == 0) {
                         FEN += piece_type;
-                    }else{
+                    } else {
                         //else add the amount of empty spaces before the piece and then add the piece
                         ss << empty_spaces;
                         ss >> space;
@@ -349,11 +351,11 @@ string Board::getFEN(bool turn) {
             }
         }
         //if not the last rank
-        if(rank != 7) {
+        if (rank != 7) {
             //if no spaces, just add a slash
             if (empty_spaces == 0) {
                 FEN += "/";
-            }else{
+            } else {
                 //otherwise add the amount of spaces and then end the rank
                 ss << empty_spaces;
                 ss >> space;
@@ -363,9 +365,9 @@ string Board::getFEN(bool turn) {
         }
     }
     //a space + whos move it is b or w
-    if(turn){
+    if (turn) {
         FEN += "_w_";
-    }else{
+    } else {
         FEN += "_b_";
     }
     //what can castle
@@ -384,17 +386,23 @@ int Board::charToInt(char c) {
     //all chars can be directly converted to integers. Subtracting 97 makes 'a' = 0. Subtracting 48 makes '0' = 0
     return c - 97;
 }
+
 //chess notation menu
-void Board::chessNotation(std::ostream& outs){
+void Board::chessNotation(std::ostream &outs) {
     outs << "How to enter a move\nThis program uses default chess notation";
     outs << "For a pawn move, select the square you would like it to go, eg: e4, d3, a1\n";
-    outs << "To capture with a pawn, write the place the pawn is on, then an 'X' and then the square the piece is on, eg exd4\n";
-    outs << "For Knight(N), Rook(R), Bishop(B), Queen(Q), or King(K) add the according letter before the square, eg Nf3, Ra7, Bd3, Qh3, Kh1\n";
-    outs << "to capture with any of the pieces above, write the letter corresponding, and then an 'X' followed by the square the captured piece is on. eg Rxe4 Nxh7\n";
-    outs << "for only Knights(N), and Rooks(R), if both of your pieces are able to go to the same square, please write the file it is on after, eg Nab3 Rae1\n";
+    outs
+            << "To capture with a pawn, write the place the pawn is on, then an 'X' and then the square the piece is on, eg exd4\n";
+    outs
+            << "For Knight(N), Rook(R), Bishop(B), Queen(Q), or King(K) add the according letter before the square, eg Nf3, Ra7, Bd3, Qh3, Kh1\n";
+    outs
+            << "to capture with any of the pieces above, write the letter corresponding, and then an 'X' followed by the square the captured piece is on. eg Rxe4 Nxh7\n";
+    outs
+            << "for only Knights(N), and Rooks(R), if both of your pieces are able to go to the same square, please write the file it is on after, eg Nab3 Rae1\n";
     outs << "To castle king side, O-O, for queen side, O-O-O\n";
     outs << endl;
 }
+
 //see https://github.com/jacksonthall22/SAN-strings/blob/main/san_strings.txt as a reference for all possible legal short algebraic moves
 vector<int> Board::getUserMove(bool side, ostream &outs, istream &ins) {
 
@@ -407,7 +415,8 @@ vector<int> Board::getUserMove(bool side, ostream &outs, istream &ins) {
     while (!legal) {
         legal = true;
         //rank/file specifier is for examples like dxc6 to specify the d pawn or promotion d7=Q or Rde7
-        char piece_type = 'P', rank_file_specifier = '0'; promotion_type = 'E';
+        char piece_type = 'P', rank_file_specifier = '0';
+        promotion_type = 'E';
         //castle type is true if kingside, false if queenside
         bool castle = false, castle_kingside, promotion = false, capture = false, check = false, checkmate = false;
         std::stringstream ss;
@@ -423,18 +432,17 @@ vector<int> Board::getUserMove(bool side, ostream &outs, istream &ins) {
         original_input = input;
 
         //linear search to set cases
-        for (char c : input) {
+        for (char c: input) {
             //no spaces allowed
             if (isspace(c)) {
                 legal = false;
                 break;
-            }
-            else if (c == 'x') capture = true;
+            } else if (c == 'x') capture = true;
             else if (c == '+') check = true;
             else if (c == '0' || c == '-' || c == 'O') castle = true;
             else if (c == '=') promotion = true;
             else if (c == '#') checkmate = true;
-            else if (find(piece_types, piece_types+7, c) != piece_types+7) piece_type = c;
+            else if (find(piece_types, piece_types + 7, c) != piece_types + 7) piece_type = c;
 
         }
         //remove check and checkmate symbols after setting flags
@@ -479,13 +487,11 @@ vector<int> Board::getUserMove(bool side, ostream &outs, istream &ins) {
                 castle_kingside = true;
                 file = charToInt('g');
                 rank = side ? 1 : 8;
-            }
-            else if (input == "0-0-0" || input == "O-O-O") {
+            } else if (input == "0-0-0" || input == "O-O-O") {
                 castle_kingside = false;
                 file = charToInt('c');
                 rank = side ? 1 : 8;
-            }
-            else {//no other legal castling options
+            } else {//no other legal castling options
                 legal = false;
                 castle = false;
             }
@@ -523,8 +529,7 @@ vector<int> Board::getUserMove(bool side, ostream &outs, istream &ins) {
                         rank_file_specifier = input.back();
                         input.pop_back();
                         piece_type = input.back();
-                    }
-                    else legal = false; // if neither specifiers, illegal
+                    } else legal = false; // if neither specifiers, illegal
                 }
             }
         }
@@ -547,20 +552,18 @@ vector<int> Board::getUserMove(bool side, ostream &outs, istream &ins) {
                         if (find(elem.second.begin(), elem.second.end(), target_sq) != elem.second.end()) {
                             if (rank_file_specifier != '0') {
                                 //
-                                if (find(files, files+8, rank_file_specifier) != files+8) {
+                                if (find(files, files + 8, rank_file_specifier) != files + 8) {
                                     if (square_to_coords[elem.first][0] == rank_file_specifier) {
                                         moves_list.push_back(original_input);
                                         return vector<int>{elem.first, target_sq};
                                     }
-                                }
-                                else if (find(ranks, ranks+8, rank_file_specifier) != ranks+8) {
+                                } else if (find(ranks, ranks + 8, rank_file_specifier) != ranks + 8) {
                                     if (square_to_coords[elem.first][1] == rank_file_specifier) {
                                         moves_list.push_back(original_input);
                                         return vector<int>{elem.first, target_sq};
                                     }
                                 }
-                            }
-                            else {
+                            } else {
                                 moves_list.push_back(original_input);
                                 return vector<int>{elem.first, target_sq};
                             }
@@ -575,7 +578,7 @@ vector<int> Board::getUserMove(bool side, ostream &outs, istream &ins) {
         ins.clear();
         outs << '"' << original_input << '"' << " is invalid. Please enter a legal move: ";
     }
-    return {1,2};
+    return {1, 2};
 }
 
 bool Board::makeUserMove(vector<int> moves) {
@@ -583,7 +586,8 @@ bool Board::makeUserMove(vector<int> moves) {
     if (moves.size() == 2) {
         promotion = promotion_type != 'E';
         move(moves.at(0), moves.at(1));
-        promotion_type = 'E'; promotion = false;
+        promotion_type = 'E';
+        promotion = false;
     } else {
         return false;
     }
@@ -598,8 +602,7 @@ void Board::checkGameEnd() {
     if (legal_moves.empty()) {
         if (find(attacked_squares.begin(), attacked_squares.end(), king_location) != attacked_squares.end()) {
             side_to_move ? cout << "Checkmate, Black wins." << endl : cout << "Checkmate, White wins." << endl;
-        }
-        else {
+        } else {
             cout << "Stalemate. The game is a draw." << endl;
         }
         game_end = true;
@@ -611,7 +614,7 @@ void Board::checkGameEnd() {
 //prints unicode representation of board
 void Board::printBoard(bool side) {
     //print for white
-    if(side) {
+    if (side) {
         // print new line
         printf("\n");
 
@@ -630,7 +633,7 @@ void Board::printBoard(bool side) {
             printf("\n");
         }
         printf("    a b c d e f g h\n");
-    }else{
+    } else {
         //print for black
         printf("\n");
 
@@ -682,7 +685,7 @@ void Board::printLegalMoves(bool side) {
     vector<int> legal_destinations;
 
     for (const auto &elem: legal_moves) {
-        for (int i : elem.second) {
+        for (int i: elem.second) {
             legal_destinations.push_back(i);
         }
     }
