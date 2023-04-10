@@ -323,6 +323,7 @@ Board board(true);
 vector<unique_ptr<Piece>> board_state = board.getBoard();
 map<int, vector<int>> legal_moves;
 int selected_square = -1;
+vector<int> highlight_squares;
 
 void init() {
     width = 760;
@@ -384,10 +385,9 @@ void display() {
             glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24, letter);
         }
     } else if (current_screen == game) {
-        for (const Quad &square: buttons) {
-            square.draw();
+        for (int i = 0; i < buttons.size(); i++) {
+            buttons.at(i).draw();
         }
-
 
     } else if (current_screen == finish) {
         string label = "You Win!";
@@ -415,9 +415,11 @@ void kbd(unsigned char key, int x, int y) {
 }
 
 void cursor(int x, int y) {
-    for (Button &square: buttons) {
+    for (int i = 0; i < buttons.size(); i++) {
+        Button &square = buttons.at(i);
         if (square.isOverlapping(x, y)) {
             square.hover();
+
         }
         else square.release();
     }
@@ -427,13 +429,27 @@ void cursor(int x, int y) {
 // button will be GLUT_LEFT_BUTTON or GLUT_RIGHT_BUTTON
 // state will be GLUT_UP or GLUT_DOWN
 void mouse(int button, int state, int x, int y) {
-    int total_off = 0;
     for (int index = 0; index < buttons.size(); index++) {
         Button &square = buttons.at(index);
         if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN && square.isOverlapping(x, y)) {
-            if (board_state.at())
-            selected_square = square.getIndex();
             legal_moves = board.getLegalMoves(board.side_to_move);
+            //if no square has been selected yet or it was not in legal moves
+            if (selected_square == -1 || legal_moves.find(selected_square) == legal_moves.end()) {
+                selected_square = index;
+                cout << selected_square << " has been selected" << endl;
+            }
+            else {
+                //if the selected square is a legal move of the previously selected square
+                if (find(legal_moves.at(selected_square).begin(), legal_moves.at(selected_square).end(), index) != legal_moves.at(selected_square).end()) {
+                    cout << selected_square << " moves to " << index << endl;
+                    board.move(selected_square, index);
+                    board.side_to_move = !board.side_to_move;
+                }
+                else {
+                    selected_square = index;
+                    cout << selected_square << " has been selected" << endl;
+                }
+            }
         }
     }
     glutPostRedisplay();
