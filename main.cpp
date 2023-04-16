@@ -13,6 +13,9 @@
 #include <sys/time.h>
 #include <GLUT/glut.h>
 #include "Button.h"
+//https://learnopengl.com/book/book_pdf.pdf
+#define STB_IMAGE_IMPLEMENTATION
+#include "stb.image.h"
 
 using namespace std;
 
@@ -325,6 +328,8 @@ map<int, vector<int>> legal_moves;
 int selected_square = -1;
 vector<int> highlight_squares;
 
+
+
 void init() {
     width = 760;
     height = 760;
@@ -348,6 +353,7 @@ void init() {
             square.setIndex(i);
         }
     }
+
 }
 
 /* Initialize OpenGL Graphics */
