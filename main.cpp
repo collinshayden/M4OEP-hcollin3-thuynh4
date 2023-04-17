@@ -1,4 +1,4 @@
-//Hayden Collins, OEP
+
 #include "Board.h"
 #include <iomanip>
 #include <algorithm>
@@ -25,71 +25,14 @@ using namespace std;
 
 // square encoding
 enum squares {
-    a8 = 0,
-    b8,
-    c8,
-    d8,
-    e8,
-    f8,
-    g8,
-    h8,
-    a7 = 16,
-    b7,
-    c7,
-    d7,
-    e7,
-    f7,
-    g7,
-    h7,
-    a6 = 32,
-    b6,
-    c6,
-    d6,
-    e6,
-    f6,
-    g6,
-    h6,
-    a5 = 48,
-    b5,
-    c5,
-    d5,
-    e5,
-    f5,
-    g5,
-    h5,
-    a4 = 64,
-    b4,
-    c4,
-    d4,
-    e4,
-    f4,
-    g4,
-    h4,
-    a3 = 80,
-    b3,
-    c3,
-    d3,
-    e3,
-    f3,
-    g3,
-    h3,
-    a2 = 96,
-    b2,
-    c2,
-    d2,
-    e2,
-    f2,
-    g2,
-    h2,
-    a1 = 112,
-    b1,
-    c1,
-    d1,
-    e1,
-    f1,
-    g1,
-    h1,
-    no_sq
+    a8 = 0,   b8, c8, d8, e8, f8, g8, h8,
+    a7 = 16,  b7, c7, d7, e7, f7, g7, h7,
+    a6 = 32,  b6, c6, d6, e6, f6, g6, h6,
+    a5 = 48,  b5, c5, d5, e5, f5, g5, h5,
+    a4 = 64,  b4, c4, d4, e4, f4, g4, h4,
+    a3 = 80,  b3, c3, d3, e3, f3, g3, h3,
+    a2 = 96,  b2, c2, d2, e2, f2, g2, h2,
+    a1 = 112, b1, c1, d1, e1, f1, g1, h1, no_sq
 };
 
 string getMove(string FEN, int elo);
@@ -320,7 +263,7 @@ enum screens {
     start, game, finish
 };
 screens current_screen;
-vector<Button> buttons(128, Button({0.85,0.95,1},{0, 0}, 0, 0,-1));
+vector<Button> buttons(128, Button({0.70, 0.85, 1}, {0, 0}, 0, 0, -1));
 Board board(true);
 vector<unique_ptr<Piece>> board_state = board.getBoard();
 map<int, vector<int>> legal_moves;
@@ -331,55 +274,72 @@ void init() {
     width = 760;
     height = 760;
     srand(time(0));
-    current_screen = game;
+    current_screen = start;
     int rank, file;
     for (int i = 0; i < buttons.size(); i++) {
         if (!(i & 0x88)) {
             Button &square = buttons.at(i);
-            rank = int(i)/16;
+            rank = int(i) / 16;
             file = i % 16;
 
             square.move(85 + file * 85, 85 + rank * 85);
-            square.resize(86,86);
+            square.resize(86, 86);
 
             //alternating colors
             if (rank % 2 == 0 && file % 2 == 1 || rank % 2 == 1 && file % 2 == 0) {
                 //TODO this is a bit jank, might want to fix later
-                square.setOriginalFill({0.45,0.65,1});
+                square.setOriginalFill({0.45, 0.65, 1});
             }
             square.setIndex(i);
         }
     }
-
 }
 
 
 void displayPiece(int x, int y, char piece_type, color background, bool side) {
-
-    int SIDE_LENGTH = 2;
+    int SIDE_LENGTH = 2
+            ;
     string path;
     switch (piece_type) {
-        case 'R': path = "../R.txt"; break;
-        case 'Q': path = "../Q.txt"; break;
-        case 'K': path = "../K.txt"; break;
-        case 'N': path = "../N.txt"; break;
-        case 'P': path = "../P.txt"; break;
-        default: path = "../P.txt"; break;
+        case 'R':
+            path = "../R.txt";
+            break;
+        case 'Q':
+            path = "../Q.txt";
+            break;
+        case 'K':
+            path = "../K.txt";
+            break;
+        case 'N':
+            path = "../N.txt";
+            break;
+        case 'P':
+            path = "../P.txt";
+            break;
+        case 'B':
+            path = "../B.txt";
+            break;
+        default:
+            path = "../P.txt";
+            break;
     }
     ifstream inFile(path);
     inFile >> noskipws;
-    int x_coord = x; int y_coord = y;
+    int x_coord = x;
+    int y_coord = y;
     char letter;
     bool draw;
 
     while (inFile >> letter) {
         draw = true;
 
-        switch(letter) {
+        switch (letter) {
             case 'b':
-                glColor4f(background.red, background.green, background.blue, 0); break;
+                glColor4f(background.red, background.green, background.blue, 0);
+                break;
             case 'w':
-                !side ? glColor4f(0,0,0,0) : glColor4f(1,1,1,0); break;
+                !side ? glColor4f(0, 0, 0, 0) : glColor4f(1, 1, 1, 0);
+                break;
 
             default: // newline
                 draw = false;
@@ -389,9 +349,9 @@ void displayPiece(int x, int y, char piece_type, color background, bool side) {
         if (draw) {
             glBegin(GL_QUADS);
             glVertex2i(x_coord, y_coord);
-            glVertex2i(x_coord+SIDE_LENGTH, y_coord);
-            glVertex2i(x_coord+SIDE_LENGTH, y_coord+SIDE_LENGTH);
-            glVertex2i(x_coord, y_coord+SIDE_LENGTH);
+            glVertex2i(x_coord + SIDE_LENGTH, y_coord);
+            glVertex2i(x_coord + SIDE_LENGTH, y_coord + SIDE_LENGTH);
+            glVertex2i(x_coord, y_coord + SIDE_LENGTH);
             glEnd();
             x_coord += SIDE_LENGTH;
         }
@@ -440,13 +400,13 @@ void display() {
             buttons.at(i).draw();
             Piece piece = board.getPiece(i);
             if (piece.piece_type != 'E') {
-                displayPiece(buttons.at(i).getLeftX(), buttons.at(i).getTopY(), piece.piece_type, buttons.at(i).getFill(), piece.side);
+                displayPiece(buttons.at(i).getLeftX(), buttons.at(i).getTopY(), piece.piece_type,
+                             buttons.at(i).getFill(), piece.side);
             }
         }
 
-
     } else if (current_screen == finish) {
-        string label = "You Win!";
+        string label = board.side_to_move ? "Black wins by checkmate" : "White wins by checkmate";
         glColor3f(1, 0, 1);
         glRasterPos2i(width / 2 - (5 * label.length()), height / 2);
         for (const char &letter: label) {
@@ -470,17 +430,6 @@ void kbd(unsigned char key, int x, int y) {
     glutPostRedisplay();
 }
 
-void cursor(int x, int y) {
-//    for (int i = 0; i < buttons.size(); i++) {
-//        Button &square = buttons.at(i);
-//        if (square.isOverlapping(x, y)) {
-//            square.hover();
-//
-//        }
-//        else square.release();
-//    }
-//    glutPostRedisplay();
-}
 
 // button will be GLUT_LEFT_BUTTON or GLUT_RIGHT_BUTTON
 // state will be GLUT_UP or GLUT_DOWN
@@ -493,15 +442,15 @@ void mouse(int button, int state, int x, int y) {
             if (selected_square == -1 || legal_moves.find(selected_square) == legal_moves.end()) {
                 selected_square = index;
                 cout << selected_square << " has been selected" << endl;
-            }
-            else {
+            } else {
                 //if the selected square is a legal move of the previously selected square
-                if (find(legal_moves.at(selected_square).begin(), legal_moves.at(selected_square).end(), index) != legal_moves.at(selected_square).end()) {
+                if (find(legal_moves.at(selected_square).begin(), legal_moves.at(selected_square).end(), index) !=
+                    legal_moves.at(selected_square).end()) {
                     cout << selected_square << " moves to " << index << endl;
                     board.move(selected_square, index);
                     board.side_to_move = !board.side_to_move;
-                }
-                else {
+                    if (board.checkGameEnd()) current_screen = finish;
+                } else {
                     selected_square = index;
                     cout << selected_square << " has been selected" << endl;
                 }
@@ -519,7 +468,6 @@ void timer(int dummy) {
 }
 
 
-
 /* Main function: GLUT runs as a console application starting at main()  */
 int main(int argc, char **argv) {
 
@@ -533,7 +481,7 @@ int main(int argc, char **argv) {
     glutInitWindowPosition(100, 200); // Position the window's initial top-left corner
     /* create the window and store the handle to it */
 
-    wd = glutCreateWindow("Chess" /* title */ );
+    wd = glutCreateWindow("Chess!" /* title */ );
 
     // Register callback handler for window re-paint event
     glutDisplayFunc(display);
@@ -544,9 +492,6 @@ int main(int argc, char **argv) {
     // register keyboard press event processing function
     // works for numbers, letters, spacebar, etc.
     glutKeyboardFunc(kbd);
-
-    // handles mouse movement
-    glutPassiveMotionFunc(cursor);
 
     // handles mouse click
     glutMouseFunc(mouse);
