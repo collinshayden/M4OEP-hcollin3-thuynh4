@@ -15,7 +15,6 @@
 #include "Button.h"
 //https://learnopengl.com/book/book_pdf.pdf
 #define STB_IMAGE_IMPLEMENTATION
-#include "stb.image.h"
 
 using namespace std;
 
@@ -328,8 +327,6 @@ map<int, vector<int>> legal_moves;
 int selected_square = -1;
 vector<int> highlight_squares;
 
-
-
 void init() {
     width = 760;
     height = 760;
@@ -354,6 +351,54 @@ void init() {
         }
     }
 
+}
+
+
+void displayPiece(int x, int y, char piece_type, color background, bool side) {
+
+    int SIDE_LENGTH = 2;
+    string path;
+    switch (piece_type) {
+        case 'R': path = "../R.txt"; break;
+        case 'Q': path = "../Q.txt"; break;
+        case 'K': path = "../K.txt"; break;
+        case 'N': path = "../N.txt"; break;
+        case 'P': path = "../P.txt"; break;
+        default: path = "../P.txt"; break;
+    }
+    ifstream inFile(path);
+    inFile >> noskipws;
+    int x_coord = x; int y_coord = y;
+    char letter;
+    bool draw;
+
+    while (inFile >> letter) {
+        draw = true;
+
+        switch(letter) {
+            case 'b':
+                glColor4f(background.red, background.green, background.blue, 0); break;
+            case 'w':
+                !side ? glColor4f(0,0,0,0) : glColor4f(1,1,1,0); break;
+
+            default: // newline
+                draw = false;
+                x_coord = x;
+                y_coord += SIDE_LENGTH;
+        }
+        if (draw) {
+            glBegin(GL_QUADS);
+            glVertex2i(x_coord, y_coord);
+            glVertex2i(x_coord+SIDE_LENGTH, y_coord);
+            glVertex2i(x_coord+SIDE_LENGTH, y_coord+SIDE_LENGTH);
+            glVertex2i(x_coord, y_coord+SIDE_LENGTH);
+            glEnd();
+            x_coord += SIDE_LENGTH;
+        }
+    }
+
+    inFile.close();
+    glFlush();  // Render now
 }
 
 /* Initialize OpenGL Graphics */
@@ -393,7 +438,12 @@ void display() {
     } else if (current_screen == game) {
         for (int i = 0; i < buttons.size(); i++) {
             buttons.at(i).draw();
+            Piece piece = board.getPiece(i);
+            if (piece.piece_type != 'E') {
+                displayPiece(buttons.at(i).getLeftX(), buttons.at(i).getTopY(), piece.piece_type, buttons.at(i).getFill(), piece.side);
+            }
         }
+
 
     } else if (current_screen == finish) {
         string label = "You Win!";
@@ -421,15 +471,15 @@ void kbd(unsigned char key, int x, int y) {
 }
 
 void cursor(int x, int y) {
-    for (int i = 0; i < buttons.size(); i++) {
-        Button &square = buttons.at(i);
-        if (square.isOverlapping(x, y)) {
-            square.hover();
-
-        }
-        else square.release();
-    }
-    glutPostRedisplay();
+//    for (int i = 0; i < buttons.size(); i++) {
+//        Button &square = buttons.at(i);
+//        if (square.isOverlapping(x, y)) {
+//            square.hover();
+//
+//        }
+//        else square.release();
+//    }
+//    glutPostRedisplay();
 }
 
 // button will be GLUT_LEFT_BUTTON or GLUT_RIGHT_BUTTON
@@ -457,7 +507,9 @@ void mouse(int button, int state, int x, int y) {
                 }
             }
         }
+
     }
+
     glutPostRedisplay();
 }
 
@@ -465,6 +517,8 @@ void timer(int dummy) {
     glutPostRedisplay();
     glutTimerFunc(30, timer, dummy);
 }
+
+
 
 /* Main function: GLUT runs as a console application starting at main()  */
 int main(int argc, char **argv) {
