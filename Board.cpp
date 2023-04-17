@@ -595,7 +595,7 @@ bool Board::makeUserMove(vector<int> moves) {
     return true;
 }
 
-void Board::checkGameEnd() {
+bool Board::checkGameEnd() {
     map<int, vector<int>> legal_moves = getLegalMoves(side_to_move);
     vector<int> attacked_squares = getAttackedSquares(!side_to_move);
     int king_location = getKingIndex(side_to_move);
@@ -607,8 +607,7 @@ void Board::checkGameEnd() {
         }
         game_end = true;
     }
-
-
+    return game_end;
 }
 
 //prints unicode representation of board
