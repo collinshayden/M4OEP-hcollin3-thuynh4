@@ -1,6 +1,4 @@
-//
-// Created by Hayden Collins on 2/3/23.
-//
+
 #include "Board.h"
 #include <stdio.h>
 #include <memory>
