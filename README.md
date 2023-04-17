@@ -18,7 +18,7 @@ via Python,
 
 **Module 4**
 For the graphics module, we moved away from the unicode board display in the console and into OpenGL and GLUT graphics. Each square is a button that has a
-default color and is clickable. When a square is clicked, it records the board coordinate and waits for another click. Then it checks to see if that is a legal move, and if so, that move is made. If the second (or subsequent) clicks are not legal, the selected square is updated. The pieces are being displayed from 45x45 pixel data saved in a .txt file. This is the most unfortunate aspect of the project, as textures proved to be far to difficult. As a result of this very suboptimal piece display, the program is quite slow. It took a lot of time to figure out how to load the pieces. And with 45x45, the resolution isn't amazing, however the time cost of doing a higher resolution image in this format would be too great. 
+default color and is clickable. When a square is clicked, it records the board coordinate and waits for another click. Then it checks to see if that is a legal move, and if so, that move is made. If the second (or subsequent) clicks are not legal, the selected square is updated. The pieces are being displayed from 45x45 pixel data saved in a .txt file. This is the most unfortunate aspect of the project, as textures proved to be far to difficult. As a result of this very suboptimal piece display, the program is quite slow. It took a lot of time to figure out how to load the pieces. And with 45x45, the resolution isn't amazing, however the time cost of doing a higher resolution image in this format would be too great. Overall, this was a very challenging adaptation to the project, and took a lot of time and troubleshooting to get everything working. If we had more time, we'd really like to use a more efficient and higher quality image display method. 
 
 **Bugs**
 The display being refreshed really doesn't look good. It isn't necessarily a bug, but somewhat unavoidable. The app is also very slow, likely due to pieces
@@ -28,11 +28,12 @@ being displayed by loading files.
 I think we are going to make a chess engine for the final project, although that likely won't involve the graphics because they are too slow. 
 
 **Grade**
-60 points for complexity. I think this project is vastly more complex than the expectations of an OEP. 
-20 points for other programming language (Python)
-10 points for command line input/output interfacing with Python. We are sending info to the Stockfish Python module each move via command line, 
-then the Python script writes the computer move to a file, then we read the file to receive input. 
-Total: 90 points. 
+60 points for complexity. Extra points for the substantially challenging task of displaying an updating board. 
+10 points for a keyboard listener function (s to start, esc to end)
+10 points for a mouse listener function (click squares to move pieces) 
+10 points for a timer function (graphics refresh loop is run on a timer)
+10 points for C++ class implementation of OpenGL and such in main.cpp
+
 
 **References**
 https://en.wikipedia.org/wiki/Board_representation_(computer_chess)
