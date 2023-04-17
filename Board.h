@@ -121,7 +121,7 @@ public:
      * Check for checkmate or stalemate
      * change game end to true
      */
-    void checkGameEnd();
+    bool checkGameEnd();
     /**
      * prints the boeard
      */
